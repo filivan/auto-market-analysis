@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "autoas"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.31.0"
+aiohttp = "^3.8.4"
+beautifulsoup4 = "^4.12.2"
+pandas = "^2.0.2"
+playwright = "^1.36.0"
+scrapy-playwright = "^0.0.30"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+pytest-cov = "^4.1.0"
+pylint = "^2.17.4"
+black = "^23.7.0"
+ipykernel = "^6.25.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
