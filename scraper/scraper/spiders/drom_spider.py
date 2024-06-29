@@ -14,24 +14,16 @@ from scraper.utils import (
 class DromSpider(scrapy.Spider):
     name = "drom"
     start_urls = [
-        "https://auto.drom.ru/toyota/camry/used/"  # 'https://auto.drom.ru/japanese/used/?grouping=1'
+        "https://auto.drom.ru/japanese/used/?grouping=1"  # "https://auto.drom.ru/toyota/camry/used/"
     ]
 
     def parse(self, response: Response):
-        models = response.xpath(
-            "//div[@data-ftid='bulls-list_model-range']"
-        )  # .extract()
+        models = response.xpath("//div[@data-ftid='bulls-list_model-range']")
         for model in models:
-            model_url = model.xpath(
-                ".//a[@href]/@href"
-            ).get()  # 'https://auto.drom.ru/toyota/camry/used/'
-            # brand_model = model.xpath(
-            #     ".//div[@data-ftid='bulls-list_model-range_title']/text()"
-            # ).get()  # 'Toyota Camry'
-            # brand, model_name = brand_model.split()
+            model_url = model.xpath(".//a[@href]/@href").get()
             model_years = model.xpath(
                 ".//span[@data-ftid='bulls-list_model-range_year']/text()"
-            ).getall()  # ['1982', '—', '2024']
+            ).getall()
             min_year, max_year = (
                 (int(model_years[0]), int(model_years[-1]))
                 if len(model_years) == 3
@@ -41,7 +33,6 @@ class DromSpider(scrapy.Spider):
                 ".//span[@data-ftid='bulls-list_model-range_bulls-count']/text()"
             ).get()
             ads_number = int("".join(filter(str.isdigit, ads_number)))
-            # ads_number = int("".join(ads_number.split()[:-1]))
             if ads_number > 2000:
                 year_intervals = get_year_intervals(min_year, max_year)
                 for min_y, max_y in year_intervals:
@@ -58,10 +49,6 @@ class DromSpider(scrapy.Spider):
                                 ),
                             ],
                         ),
-                        # cb_kwargs={
-                        #     "brand": brand,
-                        #     "model_name": model_name,
-                        # },
                     )
             yield scrapy.Request(
                 url=model_url,
@@ -74,19 +61,15 @@ class DromSpider(scrapy.Spider):
                         ),
                     ],
                 ),
-                # cb_kwargs={
-                #     "brand": brand,
-                #     "model": model_name,
-                # },
             )
 
         next_page = response.xpath(
             "//a[@data-ftid='component_pagination-item-next']/@href"
         ).get()
-        # if next_page:
-        #     yield response.follow(next_page, self.parse)
+        if next_page:
+            yield response.follow(next_page, self.parse)
 
-    def parse_model(self, response: Response):  # brand, model):
+    def parse_model(self, response: Response):
         cars = response.xpath("//a[@data-ftid='bulls-list_bull']")
         for car in cars:
             car_url: str = car.xpath(".//@href").get()
@@ -145,14 +128,14 @@ class DromSpider(scrapy.Spider):
         next_page = response.xpath(
             "//a[@data-ftid='component_pagination-item-next']/@href"
         ).get()
-        # if next_page:
-        #     yield response.follow(next_page, self.parse)
+        if next_page:
+            yield response.follow(next_page, self.parse)
 
     def start_requests(self):
         for url in self.start_urls:
             yield scrapy.Request(
                 url,
-                callback=self.parse_model,
+                callback=self.parse,
                 meta=dict(
                     playwright=True,
                     playwright_page_coroutines=[
