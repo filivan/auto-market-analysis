@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:15
+    container_name: db
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+    env_file:
+      - .env
+    ports:
+      - 5434:5432 # change
+  # web:
+  #   build: ./backend
+  #   container_name: backend
+  #   command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+  #   volumes:
+  #     - ./backend:/usr/src/app
+  #   ports:
+  #     - 8004:8000
+  
+volumes:
+  postgresdata:
