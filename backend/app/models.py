@@ -24,4 +24,3 @@ class Car(Base):
     date = mapped_column(Date, nullable=False)
     photo_url = mapped_column(String, nullable=True)
     url = mapped_column(String, nullable=False)
-
