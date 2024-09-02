@@ -1,26 +1,32 @@
 from sqlalchemy import Boolean, Integer, String, Float, Date
-from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 from database import Base
 
 
 class Car(Base):
     __tablename__ = "cars"
-    id = mapped_column(String, primary_key=True)
-    brand = mapped_column(String, nullable=False)
-    model = mapped_column(String, nullable=False)
-    year = mapped_column(Integer, nullable=False)
-    capacity = mapped_column(Float, nullable=False)
-    power = mapped_column(Float, nullable=True)
-    fuel = mapped_column(String, nullable=True)
-    transmission = mapped_column(String, nullable=True)
-    drive = mapped_column(String, nullable=True)
-    mileage = mapped_column(Integer, nullable=True)
-    broken = mapped_column(Boolean, nullable=True)
-    nodocs = mapped_column(Boolean, nullable=True)
-    price = mapped_column(Float, nullable=False)
-    price_estimation = mapped_column(String, nullable=True)
-    city = mapped_column(String, nullable=False)
-    city_ru = mapped_column(String, nullable=False)
-    date = mapped_column(Date, nullable=False)
-    photo_url = mapped_column(String, nullable=True)
-    url = mapped_column(String, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    brand: Mapped[str] = mapped_column(String, nullable=False)
+    model: Mapped[str] = mapped_column(String, nullable=False)
+    year: Mapped[int] = mapped_column(Integer, nullable=False)
+    capacity: Mapped[float]
+    power: Mapped[float]
+    fuel: Mapped[str]
+    transmission: Mapped[str]
+    drive: Mapped[str]
+    mileage: Mapped[int]
+    broken: Mapped[bool]
+    nodocs: Mapped[bool]
+    price: Mapped[float]
+    price_estimation: Mapped[str]
+    city: Mapped[str] = mapped_column(String, nullable=False)
+    city_ru: Mapped[str] = mapped_column(String, nullable=False)
+    date: Mapped[str] = mapped_column(Date, nullable=False)
+    photo_url: Mapped[str]
+    url: Mapped[str] = mapped_column(String, nullable=False)
+
+class City(Base):
+    __tablename__ = "cities"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    city: Mapped[str] = mapped_column(String, nullable=False)
+    region: Mapped[str] = mapped_column(String, nullable=False)

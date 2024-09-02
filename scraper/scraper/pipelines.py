@@ -1,6 +1,6 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from scraper.models import Car, Base
+from scraper.models import Car
 from scraper.config import settings
 import logging
 
@@ -8,7 +8,6 @@ import logging
 class SQLAlchemyPipeline:
     def open_spider(self, spider):
         self.engine = create_engine(settings.DATABASE_URL)
-        # Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
         logging.info("PostgreSQL connection established.")
 
@@ -18,6 +17,7 @@ class SQLAlchemyPipeline:
 
     def process_item(self, item, spider):
         session = self.Session()
+        item["region"] = session.get_one()
         try:
             car = Car(**item)
             session.add(car)

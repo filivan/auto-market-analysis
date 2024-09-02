@@ -1,0 +1,110 @@
+import datetime
+import scrapy
+from scrapy.http.response import Response
+from scrapy.exceptions import CloseSpider
+from scrapy_playwright.page import PageMethod
+from scraper.utils import (
+    get_date_from_car_item_date,
+    parse_car_item_desription,
+    parse_car_url,
+    get_price_estimation,
+)
+
+
+class DromUpdateSpider(scrapy.Spider):
+    name = "drom_update"
+    start_urls = [
+        "https://volgograd.drom.ru/lada/granta/"
+        # "https://auto.drom.ru/japanese/used/all/#tabs"  
+        # "https://auto.drom.ru/toyota/camry/used/"
+    ]
+
+    def __init__(self, timedelta=0, *args, **kwargs):
+        super(DromUpdateSpider, self).__init__(*args, **kwargs)
+        self.timedelta = int(timedelta)
+        self.last_day = datetime.datetime.now().date() - datetime.timedelta(self.timedelta)
+
+    def parse(self, response: Response):
+        cars = response.xpath("//a[@data-ftid='bulls-list_bull']")
+        for car in cars:
+            car_url: str = car.xpath(".//@href").get()
+            title: str = car.xpath(".//div[@data-ftid='bull_title']/text()").get()
+            description: str = "".join(
+                car.xpath(
+                    ".//div[@data-ftid='component_inline-bull-description']//span/text()"
+                ).getall()
+            )
+            broken: bool = (
+                car.xpath(".//div[@data-ftid='bull_label_broken']").get() is not None
+            )
+            nodocs: bool = (
+                car.xpath(".//div[@data-ftid='bull_label_nodocs']").get() is not None
+            )
+            price: int = int(
+                "".join(
+                    filter(
+                        str.isdigit,
+                        car.xpath(".//span[@data-ftid='bull_price']/text()").get(),
+                    )
+                )
+            )
+            price_estimation: str | None = get_price_estimation(
+                car.xpath(".//*[text()[contains(.,'цена')]]/text()").get()
+            )
+            city_ru: str = car.xpath(".//span[@data-ftid='bull_location']/text()").get()
+            date_raw: str = car.xpath(".//div[@data-ftid='bull_date']/text()").get()
+            photo_url: str | None = car.xpath(".//img/@src").get()
+
+            city, brand, model, car_id = parse_car_url(car_url)
+            desription_params = parse_car_item_desription(description)
+            year = int(title.split()[-1])
+            date = get_date_from_car_item_date(date_raw)
+            if datetime.datetime.fromisoformat(date).date() >= self.last_day:
+                yield {
+                    "id": car_id,
+                    "brand": brand,
+                    "model": model,
+                    "year": year,
+                    "capacity": desription_params["capacity"],
+                    "power": desription_params["power"],
+                    "fuel": desription_params["fuel"],
+                    "transmission": desription_params["transmission"],
+                    "drive": desription_params["drive"],
+                    "mileage": desription_params["mileage"],
+                    "broken": broken,
+                    "nodocs": nodocs,
+                    "price": price,
+                    "price_estimation": price_estimation,
+                    "city": city,
+                    "city_ru": city_ru,
+                    "date": date,
+                    "photo_url": photo_url,
+                    "url": car_url,
+                }
+            else:
+                raise CloseSpider("All new ads are added to the database.")
+        next_page = response.xpath(
+            "//a[@data-ftid='component_pagination-item-next']/@href"
+        ).get()
+
+        # if next_page:
+        #     if "page3" not in set(next_page.split("/")):
+        #         yield response.follow(next_page, self.parse)
+        if next_page:
+            yield response.follow(next_page, self.parse)
+
+    def start_requests(self):
+        for url in self.start_urls:
+            yield scrapy.Request(
+                url,
+                callback=self.parse,
+                meta=dict(
+                    playwright=True,
+                    playwright_page_coroutines=[
+                        PageMethod(
+                            "wait_for_selector",
+                            "a[data-ftid='bulls-list_bull']",
+                        ),
+                    ],
+                ),
+            )

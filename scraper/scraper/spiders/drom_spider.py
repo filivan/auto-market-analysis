@@ -67,7 +67,8 @@ class DromSpider(scrapy.Spider):
             "//a[@data-ftid='component_pagination-item-next']/@href"
         ).get()
         if next_page:
-            yield response.follow(next_page, self.parse)
+            if "page3" not in set(next_page.split("/")):
+                yield response.follow(next_page, self.parse)
 
     def parse_model(self, response: Response):
         cars = response.xpath("//a[@data-ftid='bulls-list_bull']")
@@ -128,8 +129,10 @@ class DromSpider(scrapy.Spider):
         next_page = response.xpath(
             "//a[@data-ftid='component_pagination-item-next']/@href"
         ).get()
+
         if next_page:
-            yield response.follow(next_page, self.parse)
+            if "page3" not in set(next_page.split("/")):
+                yield response.follow(next_page, self.parse)
 
     def start_requests(self):
         for url in self.start_urls:
