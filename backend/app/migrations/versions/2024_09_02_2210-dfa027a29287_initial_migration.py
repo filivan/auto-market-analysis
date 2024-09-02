@@ -1,10 +1,11 @@
-"""Create tables from models
+"""Initial migration
 
-Revision ID: 2fd6d9ab6e39
+Revision ID: dfa027a29287
 Revises: 
-Create Date: 2024-07-13 15:31:04.908019
+Create Date: 2024-09-02 22:10:01.029580
 
 """
+import json
 from typing import Sequence, Union
 
 from alembic import op
@@ -12,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '2fd6d9ab6e39'
+revision: str = 'dfa027a29287'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -42,12 +43,18 @@ def upgrade() -> None:
     sa.Column('url', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('cities',
+    cities_table = op.create_table('cities',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('city', sa.String(), nullable=False),
     sa.Column('region', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
+    with open('data/cities.json', 'r') as f:
+        data = json.load(f)
+    op.bulk_insert(
+        cities_table,
+        data
+        )
     # ### end Alembic commands ###
 
 

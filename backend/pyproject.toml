@@ -1,24 +1,31 @@
-[tool.poetry]
+[tool.pdm]
+distribution = false
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "pytest<9.0.0,>=8.2.2",
+    "ruff<1.0.0,>=0.4.8",
+]
+
+[tool.pdm.build]
+includes = []
+[project]
 name = "backend"
 version = "0.1.0"
 description = ""
-authors = ["filivan <filivandev@gmail.com>"]
+authors = [
+    {name = "Ivan Filippov", email = "filivandev@gmail.com"},
+    {name = "filivan", email = "filivandev@gmail.com"},
+]
+dependencies = [
+    "fastapi<1.0.0,>=0.111.0",
+    "pydantic<3.0.0,>=2.7.4",
+    "alembic<2.0.0,>=1.13.1",
+    "pydantic-settings<3.0.0,>=2.3.3",
+    "asyncpg<1.0.0,>=0.29.0",
+    "greenlet<4.0.0,>=3.0.3",
+]
+requires-python = "<4.0,>=3.12"
 readme = "README.md"
+license = {text = "MIT"}
 
-[tool.poetry.dependencies]
-python = "^3.12"
-fastapi = "^0.111.0"
-pydantic = "^2.7.4"
-alembic = "^1.13.1"
-pydantic-settings = "^2.3.3"
-asyncpg = "^0.29.0"
-greenlet = "^3.0.3"
-
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.2.2"
-ruff = "^0.4.8"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
