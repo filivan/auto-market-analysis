@@ -1,24 +1,30 @@
-[tool.poetry]
+[tool.pdm]
+distribution = false
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "pytest<9.0.0,>=8.2.2",
+    "ruff<1.0.0,>=0.4.9",
+]
+
+[tool.pdm.build]
+includes = ["src/scraper"]
+[project]
 name = "scraper"
 version = "0.1.0"
 description = ""
-authors = ["filivan <filivandev@gmail.com>"]
+authors = [
+    {name = "Ivan Filippov", email = "filivandev@gmail.com"},
+    {name = "filivan", email = "filivandev@gmail.com"},
+]
+dependencies = [
+    "scrapy<3.0.0,>=2.11.2",
+    "scrapy-playwright<1.0.0,>=0.0.35",
+    "sqlalchemy<3.0.0,>=2.0.30",
+    "pydantic-settings<3.0.0,>=2.3.3",
+    "asyncpg>=0.29.0",
+]
+requires-python = "<4.0,>=3.12"
 readme = "README.md"
-packages = [{include = "scraper", from = "src"}]
+license = {text = "MIT"}
 
-[tool.poetry.dependencies]
-python = "^3.12"
-scrapy = "^2.11.2"
-scrapy-playwright = "^0.0.35"
-sqlalchemy = "^2.0.30"
-psycopg2 = "^2.9.9"
-pydantic-settings = "^2.3.3"
-
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.2.2"
-ruff = "^0.4.9"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"

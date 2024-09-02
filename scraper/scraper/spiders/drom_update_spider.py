@@ -15,14 +15,16 @@ class DromUpdateSpider(scrapy.Spider):
     name = "drom_update"
     start_urls = [
         "https://volgograd.drom.ru/lada/granta/"
-        # "https://auto.drom.ru/japanese/used/all/#tabs"  
+        # "https://auto.drom.ru/japanese/used/all/#tabs"
         # "https://auto.drom.ru/toyota/camry/used/"
     ]
 
     def __init__(self, timedelta=0, *args, **kwargs):
         super(DromUpdateSpider, self).__init__(*args, **kwargs)
         self.timedelta = int(timedelta)
-        self.last_day = datetime.datetime.now().date() - datetime.timedelta(self.timedelta)
+        self.last_day = datetime.datetime.now().date() - datetime.timedelta(
+            self.timedelta
+        )
 
     def parse(self, response: Response):
         cars = response.xpath("//a[@data-ftid='bulls-list_bull']")

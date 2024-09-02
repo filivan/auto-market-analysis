@@ -45,7 +45,7 @@ class DromSpider(scrapy.Spider):
                             playwright_page_coroutines=[
                                 PageMethod(
                                     "wait_for_selector",
-                                    "a[data-ftid='bulls-list_bull']",
+                                    "div[data-ftid='bulls-list_bull']",  # "a[data-ftid='bulls-list_bull']"
                                 ),
                             ],
                         ),
@@ -57,7 +57,8 @@ class DromSpider(scrapy.Spider):
                     playwright=True,
                     playwright_page_coroutines=[
                         PageMethod(
-                            "wait_for_selector", "a[data-ftid='bulls-list_bull']"
+                            "wait_for_selector",
+                            "div[data-ftid='bulls-list_bull']",  # "a[data-ftid='bulls-list_bull']"
                         ),
                     ],
                 ),
@@ -71,10 +72,14 @@ class DromSpider(scrapy.Spider):
                 yield response.follow(next_page, self.parse)
 
     def parse_model(self, response: Response):
-        cars = response.xpath("//a[@data-ftid='bulls-list_bull']")
+        cars = response.xpath(
+            "//div[@data-ftid='bulls-list_bull']"
+        )  # response.xpath("//a[@data-ftid='bulls-list_bull']")
         for car in cars:
             car_url: str = car.xpath(".//@href").get()
-            title: str = car.xpath(".//div[@data-ftid='bull_title']/text()").get()
+            title: str = car.xpath(
+                ".//a[@data-ftid='bull_title']/h3/text()"
+            ).get()  # car.xpath(".//div[@data-ftid='bull_title']/text()").get()
             description: str = "".join(
                 car.xpath(
                     ".//div[@data-ftid='component_inline-bull-description']//span/text()"
