@@ -1,8 +1,8 @@
 """Initial migration
 
-Revision ID: dfa027a29287
+Revision ID: 7941ed79b1d6
 Revises: 
-Create Date: 2024-09-02 22:10:01.029580
+Create Date: 2024-09-06 20:28:46.281488
 
 """
 import json
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'dfa027a29287'
+revision: str = '7941ed79b1d6'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -26,20 +26,21 @@ def upgrade() -> None:
     sa.Column('brand', sa.String(), nullable=False),
     sa.Column('model', sa.String(), nullable=False),
     sa.Column('year', sa.Integer(), nullable=False),
-    sa.Column('capacity', sa.Float(), nullable=False),
-    sa.Column('power', sa.Float(), nullable=False),
-    sa.Column('fuel', sa.String(), nullable=False),
-    sa.Column('transmission', sa.String(), nullable=False),
-    sa.Column('drive', sa.String(), nullable=False),
-    sa.Column('mileage', sa.Integer(), nullable=False),
-    sa.Column('broken', sa.Boolean(), nullable=False),
-    sa.Column('nodocs', sa.Boolean(), nullable=False),
-    sa.Column('price', sa.Float(), nullable=False),
-    sa.Column('price_estimation', sa.String(), nullable=False),
+    sa.Column('capacity', sa.Float(), nullable=True),
+    sa.Column('power', sa.Float(), nullable=True),
+    sa.Column('fuel', sa.String(), nullable=True),
+    sa.Column('transmission', sa.String(), nullable=True),
+    sa.Column('drive', sa.String(), nullable=True),
+    sa.Column('mileage', sa.Integer(), nullable=True),
+    sa.Column('broken', sa.Boolean(), nullable=True),
+    sa.Column('nodocs', sa.Boolean(), nullable=True),
+    sa.Column('price', sa.Float(), nullable=True),
+    sa.Column('price_estimation', sa.String(), nullable=True),
     sa.Column('city', sa.String(), nullable=False),
     sa.Column('city_ru', sa.String(), nullable=False),
+    sa.Column('region', sa.String(), nullable=False),
     sa.Column('date', sa.Date(), nullable=False),
-    sa.Column('photo_url', sa.String(), nullable=False),
+    sa.Column('photo_url', sa.String(), nullable=True),
     sa.Column('url', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )

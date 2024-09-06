@@ -1,8 +1,8 @@
+import logging
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from scraper.models import Car
+from scraper.models import Car, City
 from scraper.config import settings
-import logging
 
 
 class SQLAlchemyPipeline:
@@ -17,7 +17,9 @@ class SQLAlchemyPipeline:
 
     def process_item(self, item, spider):
         session = self.Session()
-        item["region"] = session.get_one()
+        city = session.query(City).filter_by(city=item["city_ru"]).first()
+        item["region"] = city.region if city is not None else None
+        logging.info(f"Item {item['id']} region is {item["region"]}")
         try:
             car = Car(**item)
             session.add(car)
