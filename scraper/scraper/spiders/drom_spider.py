@@ -50,6 +50,8 @@ class DromSpider(scrapy.Spider):
                             ],
                         ),
                     )
+                    #############################################################
+                    break
             yield scrapy.Request(
                 url=model_url,
                 callback=self.parse_model,
@@ -63,6 +65,8 @@ class DromSpider(scrapy.Spider):
                     ],
                 ),
             )
+            ############################################################
+            break
 
         next_page = response.xpath(
             "//a[@data-ftid='component_pagination-item-next']/@href"

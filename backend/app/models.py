@@ -21,7 +21,7 @@ class Car(Base):
     price_estimation: Mapped[str] = mapped_column(String, nullable=True)
     city: Mapped[str] = mapped_column(String, nullable=False)
     city_ru: Mapped[str] = mapped_column(String, nullable=False)
-    region: Mapped[str] = mapped_column(String)
+    region: Mapped[str] = mapped_column(String, nullable=True)
     date: Mapped[str] = mapped_column(Date, nullable=False)
     photo_url: Mapped[str] = mapped_column(String, nullable=True)
     url: Mapped[str] = mapped_column(String, nullable=False)
